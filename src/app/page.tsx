@@ -61,7 +61,26 @@ export default function Home() {
     }
   };
 
-  const _createLink = async () => {};
+  const _createLink = async () => {
+    const signer = await getWalletClientAndUpdateSigner({
+      chainId: Number(selectedChain),
+    });
+
+    const response = await peanut.createLink({
+      structSigner: {
+        signer: signer,
+      },
+      linkDetails: {
+        chainId: Number(selectedChain),
+        tokenAmount: Number(amount),
+        tokenType: tokenList[selectedChain as keyof typeof tokenList].tokenType,
+        tokenAddress:
+          tokenList[selectedChain as keyof typeof tokenList].address,
+      },
+    });
+
+    console.log(response.createdLink.link[0]);
+  };
 
   return (
     <main className="flex min-h-screen bg-white text-black flex-col items-center justify-between p-24">
@@ -126,3 +145,34 @@ export default function Home() {
     </main>
   );
 }
+
+// const _createLink = async () => {
+//   const signer = await getWalletClientAndUpdateSigner({
+//     chainId: Number(selectedChain),
+//   });
+//   console.log("signer: ", signer);
+//   console.log("creating a link with the following args: ", {
+//     linkDetails: {
+//       chainId: Number(selectedChain),
+//       tokenAmount: Number(amount),
+//       tokenType: tokenList[selectedChain as keyof typeof tokenList].tokenType,
+//       tokenAddress:
+//         tokenList[selectedChain as keyof typeof tokenList].address,
+//     },
+//   });
+//   const resp = await peanut.createLink({
+//     structSigner: {
+//      signer: signer,
+//     },
+//     linkDetails: {
+//       chainId: Number(selectedChain),
+//       tokenAmount: Number(amount),
+//       tokenType: tokenList[selectedChain as keyof typeof tokenList].tokenType,
+//       tokenAddress:
+//         tokenList[selectedChain as keyof typeof tokenList].address,
+//       trackId: "scaffold",
+//     },
+//   });
+
+//   setLink(resp.createdLink.link[0]);
+// };
