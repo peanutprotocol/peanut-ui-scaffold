@@ -26,7 +26,6 @@ export default function Home() {
       chain: "ETH",
     },
   };
-
   const tokenList = {
     "137": {
       name: "MATIC",
@@ -39,7 +38,6 @@ export default function Home() {
       address: "0x0000000000000000000000000000000000000000",
     },
   };
-
   function walletClientToSigner(walletClient: WalletClient) {
     const { account, chain, transport } = walletClient;
     const network = {
@@ -63,36 +61,7 @@ export default function Home() {
     }
   };
 
-  const _createLink = async () => {
-    const signer = await getWalletClientAndUpdateSigner({
-      chainId: Number(selectedChain),
-    });
-    console.log("signer: ", signer);
-    console.log("creating a link with the following args: ", {
-      linkDetails: {
-        chainId: Number(selectedChain),
-        tokenAmount: Number(amount),
-        tokenType: tokenList[selectedChain as keyof typeof tokenList].tokenType,
-        tokenAddress:
-          tokenList[selectedChain as keyof typeof tokenList].address,
-      },
-    });
-    const resp = await peanut.createLink({
-      structSigner: {
-        signer,
-      },
-      linkDetails: {
-        chainId: Number(selectedChain),
-        tokenAmount: Number(amount),
-        tokenType: tokenList[selectedChain as keyof typeof tokenList].tokenType,
-        tokenAddress:
-          tokenList[selectedChain as keyof typeof tokenList].address,
-        trackId: "scaffold",
-      },
-    });
-
-    setLink(resp.createdLink.link[0]);
-  };
+  const _createLink = async () => {};
 
   return (
     <main className="flex min-h-screen bg-white text-black flex-col items-center justify-between p-24">
