@@ -1,5 +1,6 @@
 # peanut-ui-scaffold
-This is a very basic implementation of the peanut SDK in a nextjs app. 
+
+This is a very basic implementation of the peanut SDK in a nextjs app.
 
 ## Getting Started
 
@@ -11,11 +12,13 @@ yarn install
 npm install
 ```
 
-Secondly, copy the .env.example to .env. The only required var is a Walletconnect project ID but we've provided one for you:
+Secondly, copy the .env.example to .env. We've provided you with a walletconnect project id and a peanut project id. You can use these for testing purposes. If you want to use your own project id's, you can create a project at [walletconnect.org](https://cloud.walletconnect.com/app) and contact us to get your own
+
+````bash
 
 ```bash
 cp .env.example .env
-```
+````
 
 Lastly, run the development server:
 
