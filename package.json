@@ -9,23 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@squirrel-labs/peanut-sdk": "^0.2.0",
     "@types/node": "20.5.8",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "@web3modal/ethereum": "^2.7.1",
     "@web3modal/react": "^2.7.1",
     "autoprefixer": "10.4.15",
+    "encoding": "^0.1.13",
+    "ethers": "^5.7.2",
+    "lokijs": "^1.5.12",
     "next": "13.4.19",
+    "pino-pretty": "^10.0.1",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2",
     "viem": "^1.9.5",
-    "wagmi": "^1.3.11",
-    "encoding": "^0.1.13",
-    "lokijs": "^1.5.12",
-    "pino-pretty": "^10.0.1",
-    "ethers": "5.7.2"
+    "wagmi": "^1.3.11"
   }
 }

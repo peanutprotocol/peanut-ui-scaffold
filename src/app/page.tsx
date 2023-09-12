@@ -14,6 +14,7 @@ export default function Home() {
   const { open } = useWeb3Modal();
   const [selectedChain, setSelectedChain] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>("");
+  const [link, setLink] = useState<string | undefined>(undefined);
 
   const chainList = {
     "137": {
@@ -76,7 +77,7 @@ export default function Home() {
           tokenList[selectedChain as keyof typeof tokenList].address,
       },
     });
-    const createdLink = await peanut.createLink({
+    const resp = await peanut.createLink({
       structSigner: {
         signer,
       },
@@ -90,7 +91,7 @@ export default function Home() {
       },
     });
 
-    console.log(createdLink);
+    setLink(resp.createdLink.link[0]);
   };
 
   return (
@@ -144,6 +145,14 @@ export default function Home() {
         >
           {isConnected ? "CreateLink" : "Connect"}
         </button>
+        {link && (
+          <div>
+            <label className="block text-gray-700 mb-2">Link:</label>
+            <span className="block p-2  border border-gray-300 w-full">
+              {link}
+            </span>
+          </div>
+        )}
       </div>
     </main>
   );
