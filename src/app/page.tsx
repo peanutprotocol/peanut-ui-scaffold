@@ -10,11 +10,21 @@ import peanut from "@squirrel-labs/peanut-sdk";
 console.log(peanut.version);
 
 export default function Home() {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { open } = useWeb3Modal();
   const [selectedChain, setSelectedChain] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>("");
   const [link, setLink] = useState<string | undefined>(undefined);
+
+  function getRandomString(length: number) {
+    const chars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result_str = "";
+    for (let i = 0; i < length; i++) {
+      result_str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return result_str;
+  }
 
   const chainList = {
     "137": {
@@ -38,7 +48,9 @@ export default function Home() {
       address: "0x0000000000000000000000000000000000000000",
     },
   };
-  function walletClientToSigner(walletClient: WalletClient) {
+  function walletClientToSigner(
+    walletClient: WalletClient
+  ): providers.JsonRpcSigner {
     const { account, chain, transport } = walletClient;
     const network = {
       chainId: chain.id,
@@ -49,16 +61,18 @@ export default function Home() {
     const signer = provider.getSigner(account.address);
     return signer;
   }
+
   const getWalletClientAndUpdateSigner = async ({
     chainId,
   }: {
     chainId: number;
-  }) => {
+  }): Promise<providers.JsonRpcSigner> => {
     const walletClient = await getWalletClient({ chainId: Number(chainId) });
-    if (walletClient) {
-      const signer = walletClientToSigner(walletClient);
-      return signer;
+    if (!walletClient) {
+      throw new Error("Failed to get wallet client");
     }
+    const signer = walletClientToSigner(walletClient);
+    return signer;
   };
 
   const _createLink = async () => {
@@ -80,6 +94,64 @@ export default function Home() {
     });
 
     console.log(response.createdLink.link[0]);
+  };
+
+  const _claimLinkGasless = async () => {
+    const claimLinkGaslessResponse = await peanut.claimLinkGasless({
+      link: "",
+      recipientAddress: "",
+      APIKey: "",
+    });
+  };
+
+  const _claimLink = async () => {
+    const signer = await getWalletClientAndUpdateSigner({
+      chainId: Number(selectedChain),
+    });
+    const claimLinkResponse = await peanut.claimLink({
+      signer: signer,
+      link: "",
+    });
+  };
+
+  const _createLinkAdvancedWrapper = async () => {
+    const signer = await getWalletClientAndUpdateSigner({
+      chainId: Number(selectedChain),
+    });
+
+    const linkDetails = {
+      chainId: Number(selectedChain),
+      tokenAmount: Number(amount),
+      tokenType: tokenList[selectedChain as keyof typeof tokenList].tokenType,
+      tokenAddress: tokenList[selectedChain as keyof typeof tokenList].address,
+    };
+
+    const passwords = [getRandomString(16)];
+
+    const prepareTxsResponse = await peanut.prepareTxs({
+      address: address ?? "",
+      linkDetails,
+      passwords,
+    });
+
+    const signedTxs = await Promise.all(
+      prepareTxsResponse.unsignedTxs.map((unsignedTx: any) =>
+        peanut.signAndSubmitTx({
+          structSigner: {
+            signer: signer,
+          },
+          unsignedTx,
+        })
+      )
+    );
+
+    const links = await peanut.getLinksFromTx({
+      linkDetails,
+      txHash: signedTxs[signedTxs.length - 1].txHash,
+      passwords: passwords,
+    });
+
+    console.log(links);
   };
 
   return (
@@ -125,7 +197,7 @@ export default function Home() {
           className="py-2 px-4 bg-blue-500 text-white"
           onClick={() => {
             if (isConnected) {
-              _createLink();
+              _createLinkAdvancedWrapper();
             } else {
               open();
             }

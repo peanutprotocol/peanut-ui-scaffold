@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@squirrel-labs/peanut-sdk": "^0.2.0",
+    "@squirrel-labs/peanut-sdk": "^0.2.6",
     "@types/node": "20.5.8",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
